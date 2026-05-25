@@ -106,8 +106,6 @@ mod tests {
         let counts = [10u64, 0, 0];
         let mut out = [0.0f64; 3];
         laplace_normalize(&counts, 1.0, &mut out);
-        println!("got: {:?}, expected: [{}, {}, {}]",
-            out, 11.0/13.0, 1.0/13.0, 1.0/13.0);
         assert!((out[0] - 11.0 / 13.0).abs() < EPSILON);
         assert!((out[1] - 1.0 / 13.0).abs() < EPSILON);
         assert!((out[2] - 1.0 / 13.0).abs() < EPSILON);
