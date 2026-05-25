@@ -37,18 +37,18 @@ impl Baseline {
         for inner in self.counts.values() {
             column_set.extend(inner.keys().copied());
         }
-        let mut column_ids: Vec<u64> = column_set.into_iter().collect();
-        column_ids.sort_unstable();
+        let mut column_idx: Vec<u64> = column_set.into_iter().collect();
+        column_idx.sort_unstable();
 
         // for each observed `from`, build a dense count vector
         // aligned to the column space then Laplace-smooth it into a
         // probability row.
 
-        let k = column_ids.len();
+        let k = column_idx.len();
         let mut rows: HashMap<u64, Vec<f64>> = HashMap::new();
 
         for (&from, inner) in &self.counts {
-            let counts: Vec<u64> = column_ids
+            let counts: Vec<u64> = column_idx
                 .iter()
                 .map(|to| inner.get(to).copied().unwrap_or(0))
                 .collect();
@@ -85,9 +85,14 @@ impl TransitionMatrix {
 mod tests {
     use super::*;
 
+    const EPSILON: f64 = 1e-9;
+
     #[test]
     fn unobserved_from_returns_none() {
-        // TODO
+        // A `from` ID that never appeared in training has no row.
+        let b = Baseline::new(1.0);
+        let m = b.finalize();
+        assert!(m.row(42).is_none());
     }
 
     #[test]
@@ -95,7 +100,6 @@ mod tests {
         // observe (1, 2) once, finalize, check row(1)
         // TODO
     }
-
     #[test]
     fn rows_sum_to_one() {
         // sanity: any returned row sums to 1.0 (within EPS)
