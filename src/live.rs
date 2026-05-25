@@ -127,4 +127,20 @@ mod tests {
         t.observe(1, 2); // should evict the first (1, 2)
         assert_eq!(t.window_len(), 3);
     }
+
+    #[test]
+    fn unknown_from_dropped() {
+        let baseline = make_baseline();
+        let mut t = LiveTracker::new(&baseline, 10, 1.0, 1);
+        t.observe(99, 2); // 99 not a baseline `from`
+        assert_eq!(t.window_len(), 0);
+    }
+
+    #[test]
+    fn unknown_to_dropped() {
+        let baseline = make_baseline();
+        let mut t = LiveTracker::new(&baseline, 10, 1.0, 1);
+        t.observe(1, 999); // 999 not in baseline columns
+        assert_eq!(t.window_len(), 0);
+    }
 }
