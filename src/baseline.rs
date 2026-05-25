@@ -136,7 +136,14 @@ mod tests {
 
     #[test]
     fn columns_are_sorted_and_unique() {
-        // observe several transitions with overlapping `to`s, check columns() output
-        // TODO
+        let mut b = Baseline::new(1.0);
+        b.observe(1, 7);
+        b.observe(2, 3);
+        b.observe(1, 3); // duplicate `to` = 3
+        b.observe(4, 5);
+
+        let m = b.finalize();
+        let cols = m.columns();
+        assert_eq!(cols, &[3, 5, 7]);
     }
 }
