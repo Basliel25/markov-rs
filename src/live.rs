@@ -181,7 +181,6 @@ mod tests {
 
     #[test]
     fn divergence_zero_when_live_matches_baseline() {
-        // Baseline: (1,2) seen 2x, (1,3) seen 1x → smoothed [3/5, 2/5]
         let baseline = make_baseline();
         let mut t = LiveTracker::new(&baseline, 100, 1.0, 1);
 
@@ -191,5 +190,16 @@ mod tests {
 
         let div = t.divergence_for(1).expect("min_observations met");
         assert!(div < 0.01, "divergence should be near zero, got {}", div);
+    }
+
+    #[test]
+    fn divergence_nonzero_when_live_diverges() {
+        let baseline = make_baseline();
+        let mut t = LiveTracker::new(&baseline, 100, 1.0, 1);
+
+        for _ in 0..30 { t.observe(1, 3); }
+
+        let div = t.divergence_for(1).expect("min_observations met");
+        assert!(div > 0.1, "divergence should be substantial, got {}", div);
     }
 }
