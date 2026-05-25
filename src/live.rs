@@ -85,7 +85,31 @@ impl<'a> LiveTracker<'a> {
     /// - `from` is not in the baseline 
     /// - fewer than `min_observations` of `from` exist in the current window
     ///   (insufficient signal)
-    pub fn divergence_for(&self, from: u64) -> Option<f64> {todo!()}
+    pub fn divergence_for(&self, from: u64) -> Option<f64> {
+        // Baseline must have a row for `from`
+        let basline_row = self.baseline.row(from)?;
+
+        // Have minimum distributions,
+        // under this threshold the distribution is
+        // just laplace prior instead of actual data.
+        // Explicit none!!!!
+        let inner = self.counts.get(&from)?;
+        let total: u64 = inner.values().sum();
+        if (total as usize) < self.min_observations {
+            return None;
+        }
+
+        let columns = self.baseline.columns();
+        let counts: Vec<u64> = columns
+            .iter()
+            .map(|to| inner.get(to).copied().unwrap_or(0))
+            .collect();
+
+        // Smooth the live counts into a probability row using the same alpha
+    // as the baseline.
+
+
+    }
 
     // The `to` ID that contributed most to the divergence for `from`.
     /// Returns `(to_id, term_value)` which is the per-column KL contribution.
