@@ -42,8 +42,43 @@ impl<'a> LiveTracker<'a> {
     }
 
     /// Record a single observed transition.
-    pub fn observe(&mut self, from: u64, to: u64) {todo!()}
+    pub fn observe(&mut self, from: u64, to: u64) {
+        // Filter: drop if either ID is outside baslien columns
+        if self.baseline.row(from).is_none() {
+            return;
+        }
+        if !self.baseline.columns().contains(&to) {
+            return;
+        }
 
+        // Push to the back of the window and increment the mirrored count.
+        self.window.push_back((from, to));
+        *self.counts
+            .entry(from)
+            .or_default()
+            .entry(to)
+            .or_insert(0) += 1;
+
+        // Evicting from the front if over capacity
+        // Mirror the decrement so
+        // `counts` stays in sync with `window`. 
+        if self.window.len() > self.window_size {
+            let (old_from, old_to) = self.window.pop_front()
+                .expect("window non-empty: just checked len > window_size");
+
+            if let Some(inner) = self.counts.get_mut(&old_from) {
+                if let Some(c) = inner.get_mut(&old_to) {
+                    *c -= 1;
+                    if *c == 0 {
+                        inner.remove(&old_to);
+                    }
+                }
+                if inner.is_empty() {
+                    self.counts.remove(&old_from);
+                }
+            }
+        }
+    }
     // KL divergence between live and baseline rows for `from`.
     ///
     /// Returns `None` if:
