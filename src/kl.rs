@@ -51,10 +51,10 @@ pub fn kl_divergence(p: &[f64], q: &[f64]) -> f64 {
     //   KL(P || Q) = Σ p[i] * log(p[i] / q[i])
     debug_assert_eq!(p.len(), q.len());
 
-    p.iter()
-    .zip(q.iter())
-    .filter(|(&pi, _)| pi > 0.0) // drop 0*log(0/q) terms which  is 0 by convention
-    .map(|(&pi, &qi)| pi * (pi / qi).ln())
+    p.iter().copied()
+    .zip(q.iter().copied())
+    .filter(|(pi, _)| *pi > 0.0) // drop 0*log(0/q) terms which  is 0 by convention
+    .map(|(pi, qi)| pi * (pi / qi).ln())
     .sum()
 }
 
@@ -62,28 +62,39 @@ pub fn kl_divergence(p: &[f64], q: &[f64]) -> f64 {
 mod tests {
     use super::*;
 
+    const EPSILON: f64 = 1e-9;
+
     #[test]
     fn test_kl_zero_on_identical_uniform() {
-        // TODO
-    }
+        // KL(P || P) = Σ p[i] * log(1) = 0 for any P.
+        let p = [1.0 / 3.0; 3];
+        assert!((kl_divergence(&p, &p)).abs() < EPSILON);
+  }
 
     #[test]
     fn test_kl_zero_on_identical_skewed() {
+        // Same identity check on a non-uniform distribution
         // TODO
     }
 
     #[test]
     fn test_kl_known_value() {
+        // P = [0.7, 0.2, 0.1], Q = uniform [1/3, 1/3, 1/3]
+        // Expected = 0.7*ln(0.7/0.333..) + 0.2*ln(0.2/0.333..) + 0.1*ln(0.1/0.333..)
         // TODO: hand-computed value
     }
 
     #[test]
     fn test_kl_asymmetry() {
+        // KL is fundamentally assymetric
         // TODO
     }
 
     #[test]
     fn test_laplace_edge_case() {
+        // counts = [10, 0, 0], α = 1.0
+        // N = 10, k = 3, denom = 10 + 1*3 = 13
+        // p = [11/13, 1/13, 1/13]
         // TODO
     }
 }
