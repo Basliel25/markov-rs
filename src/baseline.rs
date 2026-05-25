@@ -108,13 +108,30 @@ mod tests {
     #[test]
     fn rows_sum_to_one() {
         // sanity: any returned row sums to 1.0 (within EPS)
-        // TODO
+        let mut b = Baseline::new(1.0);
+        b.observe(1, 2);
+        b.observe(1, 3);
+        b.observe(1, 2); // (1, 2) seen twice
+        b.observe(5, 7); 
+
+        let m = b.finalize();
+        let row = m.row(1).expect("row(1) should exist");
+        let sum: f64 = row.iter().sum();
+        assert!((sum - 1.0).abs() < EPSILON, "row sum = {}, expected 1.0", sum);
     }
 
     #[test]
     fn continues_after_finalize() {
-        // finalize, observe more, finalize again, verify changes reflected
-        // TODO
+        let mut b = Baseline::new(1.0);
+        b.observe(1, 2);
+        let m1 = b.finalize();
+
+        b.observe(1, 3);
+        let m2 = b.finalize();
+
+        // m1 had only one column ([2]); m2 has two ([2, 3]).
+        assert_eq!(m1.columns().len(), 1);
+        assert_eq!(m2.columns().len(), 2);
     }
 
     #[test]
