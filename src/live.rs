@@ -115,7 +115,17 @@ impl<'a> LiveTracker<'a> {
 
     // The `to` ID that contributed most to the divergence for `from`.
     /// Returns `(to_id, term_value)` which is the per-column KL contribution.
-    pub fn dominant_transition(&self, from: u64) -> Option<(u64, f64)> {todo!()}
+    pub fn dominant_transition(&self, from: u64) -> Option<(u64, f64)> {
+        // Need a baseline row and enough
+        // observations.
+        let baseline_row = self.baseline.row(from)?;
+        let inner = self.counts.get(&from)?;
+        let total: u64 = inner.values().sum();
+        if (total as usize) < self.min_observations {
+            return None;
+        }
+        todo!()
+    }
 
     // GETTERS
     pub fn window_len(&self) -> usize {
