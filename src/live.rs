@@ -242,4 +242,21 @@ mod tests {
 
         assert!(t.divergence_for(1).is_none());
     }
+
+    // Dominant transition tetss
+    #[test]
+    fn dominant_transition_identifies_outlier() {
+        // Baseline: column space [2, 3], from=1 has counts [2, 1] 
+        // hence with probs [3/5, 2/5].
+        // Live window is flooded with (1, 3) only. 
+        // Live  then counts [0, 30]
+        let baseline = make_baseline();
+        let mut t = LiveTracker::new(&baseline, 100, 1.0, 1);
+
+        for _ in 0..30 { t.observe(1, 3); }
+
+        let (to_id, term) = t.dominant_transition(1).expect("min_obs met");
+        assert_eq!(to_id, 3, "expected column 3 as outlier, got {}", to_id);
+        assert!(term > 0.0, "term should be positive (live overweights), got {}", term);
+    }
 }
