@@ -41,8 +41,25 @@ impl Baseline {
         column_ids.sort_unstable();
 
         // for each observed `from`, build a dense count vector
-        // aligned to the column space, then Laplace-smooth it into a
+        // aligned to the column space then Laplace-smooth it into a
         // probability row.
+
+        let k = column_ids.len();
+        let mut rows: HashMap<u64, Vec<f64>> = HashMap::new();
+
+        for (&from, inner) in &self.counts {
+            let counts: Vec<u64> = column_ids
+                .iter()
+                .map(|to| inner.get(to).copied().unwrap_or(0))
+                .collect();
+
+            let mut probs = vec![0.0; k];
+            crate::kl::laplace_normalize(&counts, self.alpha, &mut probs);
+
+            rows.insert(from, probs);
+        }
+
+        TransitionMatrix { column_idx, rows }
     }
 }
 
