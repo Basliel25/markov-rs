@@ -124,6 +124,17 @@ impl<'a> LiveTracker<'a> {
         if (total as usize) < self.min_observations {
             return None;
         }
+        
+        // Rebuild the live row wit the per-column terms
+        let columns = self.baseline.columns();
+        let counts: Vec<u64> = columns
+            .iter()
+            .map(|to| inner.get(to).copied().unwrap_or(0))
+            .collect();
+        let mut live_row = vec![0.0; columns.len()];
+        kl::laplace_normalize(&counts, self.alpha, &mut live_row);
+
+        // Per-column KL contribution: live[i] * ln(live[i] / baseline[i])
         todo!()
     }
 
