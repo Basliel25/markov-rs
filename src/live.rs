@@ -170,11 +170,26 @@ mod tests {
         assert_eq!(t.window_len(), 0);
     }
 
+    // Divergence tests
     #[test]
     fn divergence_none_for_unknown_from() {
         let baseline = make_baseline();
         let t = LiveTracker::new(&baseline, 100, 1.0, 1);
 
         assert!(t.divergence_for(42).is_none());
+    }
+
+    #[test]
+    fn divergence_zero_when_live_matches_baseline() {
+        // Baseline: (1,2) seen 2x, (1,3) seen 1x → smoothed [3/5, 2/5]
+        let baseline = make_baseline();
+        let mut t = LiveTracker::new(&baseline, 100, 1.0, 1);
+
+        // 20:10 ratio matches baseline's 2:1
+        for _ in 0..20 { t.observe(1, 2); }
+        for _ in 0..10 { t.observe(1, 3); }
+
+        let div = t.divergence_for(1).expect("min_observations met");
+        assert!(div < 0.01, "divergence should be near zero, got {}", div);
     }
 }
