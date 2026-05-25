@@ -1,6 +1,6 @@
 //! Baseline transition learner for first-order Markov chains.
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 /// Accumulates observed (from, to) transition counts.
 /// Alpha is the laplace smooting parameter
