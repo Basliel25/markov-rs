@@ -82,7 +82,12 @@ mod tests {
     fn test_kl_known_value() {
         // P = [0.7, 0.2, 0.1], Q = uniform [1/3, 1/3, 1/3]
         // Expected = 0.7*ln(0.7/0.333..) + 0.2*ln(0.2/0.333..) + 0.1*ln(0.1/0.333..)
-        // TODO: hand-computed value
+        let p = [0.7, 0.2, 0.1];
+        let q = [1.0 / 3.0; 3];
+        let expected: f64 = p.iter().copied()
+            .zip(q.iter().copied()).map(|(pi, qi): (f64, f64)| pi * (pi / qi).ln()).sum();
+        let got = kl_divergence(&p, &q);
+        assert!((got - expected).abs() < EPSILON);
     }
 
     #[test]
