@@ -114,4 +114,17 @@ mod tests {
         b.finalize()
     }
 
+    #[test]
+    fn window_evicts_fifo() {
+        let baseline = make_baseline();
+        let mut t = LiveTracker::new(&baseline, 3, 1.0, 1);
+
+        t.observe(1, 2);
+        t.observe(1, 2);
+        t.observe(1, 3);
+        assert_eq!(t.window_len(), 3);
+
+        t.observe(1, 2); // should evict the first (1, 2)
+        assert_eq!(t.window_len(), 3);
+    }
 }
