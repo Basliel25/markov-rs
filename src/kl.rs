@@ -34,7 +34,7 @@ pub fn laplace_normalize(counts: &[u64], alpha: f64, out: &mut [f64]) {
     for (o, &c) in out.
         iter_mut()
             .zip(counts.iter()) {
-                *o = (c as f64) / denominator;
+                *o = (c as f64 + alpha) / denominator;
             }
 }
 
@@ -103,6 +103,13 @@ mod tests {
         // counts = [10, 0, 0], α = 1.0
         // N = 10, k = 3, denom = 10 + 1*3 = 13
         // p = [11/13, 1/13, 1/13]
-        // TODO
+        let counts = [10u64, 0, 0];
+        let mut out = [0.0f64; 3];
+        laplace_normalize(&counts, 1.0, &mut out);
+        println!("got: {:?}, expected: [{}, {}, {}]",
+            out, 11.0/13.0, 1.0/13.0, 1.0/13.0);
+        assert!((out[0] - 11.0 / 13.0).abs() < EPSILON);
+        assert!((out[1] - 1.0 / 13.0).abs() < EPSILON);
+        assert!((out[2] - 1.0 / 13.0).abs() < EPSILON);
     }
 }
