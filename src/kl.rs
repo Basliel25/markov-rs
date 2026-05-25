@@ -92,8 +92,10 @@ mod tests {
 
     #[test]
     fn test_kl_asymmetry() {
-        // KL is fundamentally assymetric
-        // TODO
+        // KL divergence is assymetric fundamentally
+        let p: [f64; 3] = [0.7, 0.2, 0.1];
+        let q: [f64; 3] = [0.5, 0.3, 0.2];
+        assert!((kl_divergence(&p, &q) - kl_divergence(&q, &p)).abs() > EPSILON);
     }
 
     #[test]
