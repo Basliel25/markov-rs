@@ -66,7 +66,7 @@ impl Baseline {
 /// A frozen, row-stochastic transition matrix with Laplace smoothing applied.
 pub struct TransitionMatrix {
     column_idx: Vec<u64>,
-    rows: HashMap<u64, HashMap<u64, u64>>,
+    rows: HashMap<u64, Vec<f64>>,
 }
 
 impl TransitionMatrix {
