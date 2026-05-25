@@ -29,8 +29,21 @@ impl Baseline {
     }
 
     /// Produce a frozen transition matrix from accumlated count
-    pub fn finalize(&self) -> TransitionMatrix {todo!()}
+    pub fn finalize(&self) -> TransitionMatrix {
+        // Build columns
+        // Every transition id becomes now a column in the matrix
+        // Collect to a hash set and apply determnisntic ordering
+        let mut column_set: HashSet<u64> = HashSet::new();
+        for inner in self.counts.values() {
+            column_set.extend(inner.keys().copied());
+        }
+        let mut column_ids: Vec<u64> = column_set.into_iter().collect();
+        column_ids.sort_unstable();
 
+        // for each observed `from`, build a dense count vector
+        // aligned to the column space, then Laplace-smooth it into a
+        // probability row.
+    }
 }
 
 /// A frozen, row-stochastic transition matrix with Laplace smoothing applied.
