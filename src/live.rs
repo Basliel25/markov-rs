@@ -135,7 +135,16 @@ impl<'a> LiveTracker<'a> {
         kl::laplace_normalize(&counts, self.alpha, &mut live_row);
 
         // Per-column KL contribution: live[i] * ln(live[i] / baseline[i])
-        todo!()
+        let (best_idx, best_term) = live_row
+            .iter()
+            .copied()
+            .zip(baseline_row.iter().copied())
+            .enumerate()
+            .filter(|(_, (pi, _))| *pi > 0.0)
+            .map(|(i, (pi, qi))| (i, pi * (pi / qi).ln()))
+            .max_by(|(_, a), (_, b)| a.abs().partial_cmp(&b.abs()).unwrap())?;
+
+        Some((columns[best_idx], best_term))
     }
 
     // GETTERS
