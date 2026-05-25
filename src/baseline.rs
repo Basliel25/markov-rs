@@ -98,7 +98,12 @@ mod tests {
     #[test]
     fn single_transition_smooths_correctly() {
         // observe (1, 2) once, finalize, check row(1)
-        // TODO
+        let mut b = Baseline::new(1.0);
+        b.observe(1, 2);
+        let m = b.finalize();
+        let row = m.row(1).expect("row(1) should exist");
+        assert_eq!(row.len(), 1);
+        assert!((row[0] - 1.0).abs() < EPSILON)
     }
     #[test]
     fn rows_sum_to_one() {
