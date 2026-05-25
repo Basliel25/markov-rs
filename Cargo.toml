@@ -2,6 +2,13 @@
 name = "markov-rs"
 version = "0.1.0"
 edition = "2024"
+description = "First-order Markov chain library with KL-divergence sliding-window comparison"
+license = "MIT"
+repository = "https://github.com/Basliel25/markov-rs"
+readme = "README.md"
+keywords = ["markov", "kl-divergence", "information-theory", "statistics"]
+categories = ["mathematics", "science"]
+
 
 [dependencies]
 
