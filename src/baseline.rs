@@ -20,7 +20,13 @@ impl Baseline {
     }
 
     /// Record a transition
-    pub fn observe(&mut self, from: u64, to: u64){todo!()}
+    pub fn observe(&mut self, from: u64, to: u64){
+        *self.counts
+            .entry(from)
+            .or_default()
+            .entry(to)
+            .or_insert(0) += 1;
+    }
 
     /// Produce a frozen transition matrix from accumlated count
     pub fn finalize(&self) -> TransitionMatrix {todo!()}
