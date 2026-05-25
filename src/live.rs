@@ -4,9 +4,22 @@ use crate::baseline::TransitionMatrix;
 use crate::kl;
 use std::collections::{HashMap, VecDeque};
 
-pub struct LiveTracker<'a> {}
+pub struct LiveTracker<'a> {
+    baseline: TransitionMatrix,
+    window_size: usize,
+    alpha: f64, 
+    min_observations: usize,
 
-impl LiveTracker {}
+    /// FIFO queue of (from, to) transitions.
+    window: VecDeque<(u64, u64)>,
+
+    // Number of items appearing in window
+    counts: HashMap<u64, HashMap<u64, u64>>
+}
+
+impl LiveTracker {
+    pub fn new()
+}
 
 #[cfg(test)]
 mod tests {
