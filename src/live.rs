@@ -87,7 +87,7 @@ impl<'a> LiveTracker<'a> {
     ///   (insufficient signal)
     pub fn divergence_for(&self, from: u64) -> Option<f64> {
         // Baseline must have a row for `from`
-        let basline_row = self.baseline.row(from)?;
+        let baseline_row = self.baseline.row(from)?;
 
         // Have minimum distributions,
         // under this threshold the distribution is
@@ -106,9 +106,11 @@ impl<'a> LiveTracker<'a> {
             .collect();
 
         // Smooth the live counts into a probability row using the same alpha
-    // as the baseline.
+        // as the baseline.
+        let mut live_row = vec![0.0; columns.len()];
+        kl::laplace_normalize(&counts, self.alpha, &mut live_row);
 
-
+        Some(kl::kl_divergence(&live_row, baseline_row))
     }
 
     // The `to` ID that contributed most to the divergence for `from`.
@@ -166,5 +168,13 @@ mod tests {
         let mut t = LiveTracker::new(&baseline, 10, 1.0, 1);
         t.observe(1, 999); // 999 not in baseline columns
         assert_eq!(t.window_len(), 0);
+    }
+
+    #[test]
+    fn divergence_none_for_unknown_from() {
+        let baseline = make_baseline();
+        let t = LiveTracker::new(&baseline, 100, 1.0, 1);
+
+        assert!(t.divergence_for(42).is_none());
     }
 }
