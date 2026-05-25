@@ -74,7 +74,8 @@ mod tests {
     #[test]
     fn test_kl_zero_on_identical_skewed() {
         // Same identity check on a non-uniform distribution
-        // TODO
+        let p = [0.7, 0.2, 0.1];
+        assert!((kl_divergence(&p, &p)).abs() < EPSILON);
     }
 
     #[test]
