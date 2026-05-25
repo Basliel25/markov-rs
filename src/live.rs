@@ -90,6 +90,11 @@ impl<'a> LiveTracker<'a> {
     // The `to` ID that contributed most to the divergence for `from`.
     /// Returns `(to_id, term_value)` which is the per-column KL contribution.
     pub fn dominant_transition(&self, from: u64) -> Option<(u64, f64)> {todo!()}
+
+    // GETTERS
+    pub fn window_len(&self) -> usize {
+        self.window.len()
+    }
 }
 
 #[cfg(test)]
@@ -98,4 +103,15 @@ mod tests {
     use crate::baseline::Baseline;
 
     const EPS: f64 = 1e-9;
+
+    // Helper function for running modular tests
+    fn make_baseline() -> TransitionMatrix {
+        let mut b = Baseline::new(1.0);
+        // Establish column space {2, 3} and from {1}.
+        b.observe(1, 2);
+        b.observe(1, 2);
+        b.observe(1, 3);
+        b.finalize()
+    }
+
 }
