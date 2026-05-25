@@ -29,7 +29,7 @@ pub fn laplace_normalize(counts: &[u64], alpha: f64, out: &mut [f64]) {
     let total: f64 = counts.iter()
         .sum::<u64>() as f64;
 
-    let denominator = total + alpha * n;
+    let denominator = total + alpha * n; // Normalizing constant
 
     for (o, &c) in out.
         iter_mut()
@@ -50,7 +50,12 @@ pub fn kl_divergence(p: &[f64], q: &[f64]) -> f64 {
     //
     //   KL(P || Q) = Σ p[i] * log(p[i] / q[i])
     debug_assert_eq!(p.len(), q.len());
-    todo!()
+
+    p.iter()
+    .zip(q.iter())
+    .filter(|(&pi, _)| pi > 0.0) // drop 0*log(0/q) terms which  is 0 by convention
+    .map(|(&pi, &qi)| pi * (pi / qi).ln())
+    .sum()
 }
 
 #[cfg(test)]
