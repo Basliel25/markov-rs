@@ -202,4 +202,14 @@ mod tests {
         let div = t.divergence_for(1).expect("min_observations met");
         assert!(div > 0.1, "divergence should be substantial, got {}", div);
     }
+
+    #[test]
+    fn divergence_none_below_min_observations() {
+        let baseline = make_baseline();
+        let mut t = LiveTracker::new(&baseline, 100, 1.0, 10);
+
+        for _ in 0..3 { t.observe(1, 2); }  // 3 < 10
+
+        assert!(t.divergence_for(1).is_none());
+    }
 }
