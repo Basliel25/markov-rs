@@ -1,6 +1,6 @@
 # markov-rs
 
-[![Crates.io](https://img.shields.io/crates/v/markov-rs.svg)][https://crates.io/crates/markov-rs](https://crates.io/crates/markovTrans-rs)
+[![Crates.io](https://img.shields.io/crates/v/markov-rs.svg)](https://crates.io/crates/markov-rs](https://crates.io/crates/markovTrans-rs)
 [![License](https://img.shields.io/crates/l/markov-rs.svg)](https://github.com/Basliel25/markov-rs#license)
 First-order Markov chain library with KL divergence analysis.
 
