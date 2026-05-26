@@ -30,7 +30,7 @@ impl<'a> LiveTracker<'a> {
         min_observations: usize,
     ) -> Self {
 
-        /// Create a new live tracker binding to baseline
+        // Create a new live tracker binding to baseline
         Self {
             baseline,
             window_size,

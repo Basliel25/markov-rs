@@ -9,13 +9,13 @@ pub fn laplace_normalize(counts: &[u64], alpha: f64, out: &mut [f64]) {
 
     debug_assert_eq!(counts.len(), out.len());
 
-    /// We use laplace smoothing to smooth out zero probabilities
-    /// for events with count 0.
-    ///
-    /// The fix is to add alpha extra observations
-    /// for every possible outcome.
-    ///
-    ///         c[i] + α
+    // We use laplace smoothing to smooth out zero probabilities
+    // for events with count 0.
+    //
+    // The fix is to add alpha extra observations
+    // for every possible outcome.
+    //
+    //         c[i] + α
     // p[i] = ----------
     //         N + α * k
     // where N = total observed counts
@@ -25,6 +25,7 @@ pub fn laplace_normalize(counts: &[u64], alpha: f64, out: &mut [f64]) {
     // α = 1.0 for this case
     // Alpha can be played with, the higher the alpha 
     // the more the data is pulled towards uniformity
+
     let n = counts.len() as f64;
     let total: f64 = counts.iter()
         .sum::<u64>() as f64;
