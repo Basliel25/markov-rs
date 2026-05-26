@@ -1,5 +1,5 @@
 [package]
-name = "markov-rs"
+name = "markovTrans-rs"
 version = "0.1.0"
 edition = "2024"
 description = "First-order Markov chain library with KL-divergence sliding-window comparison"
@@ -13,4 +13,4 @@ categories = ["mathematics", "science"]
 [dependencies]
 
 [lib]
-name = "markov_rs"
+name = "markov_trans_rs"
