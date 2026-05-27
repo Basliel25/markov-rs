@@ -11,6 +11,8 @@ categories = ["mathematics", "science"]
 
 
 [dependencies]
+serde = "1.0.228"
+serde_json = "1.0.150"
 
 [lib]
 name = "markov_trans_rs"
